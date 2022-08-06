@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"runtime"
+	"time"
 )
 
 func signupHandler(w http.ResponseWriter, r *http.Request) {
@@ -19,12 +21,19 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func greetingHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Printf("# of CPU: %v\n", runtime.NumCPU())
+	reqCount += 1
 	if r.Method != "GET" {
 		http.Error(w, "Not found", http.StatusNotFound)
 		return
 	}
+	fmt.Printf("%v requested\n", reqCount)
+	time.Sleep(5 * time.Second)
+	fmt.Println("Processed...")
 	fmt.Fprintln(w, "Hello!")
 }
+
+var reqCount = 0
 
 func main() {
 	fileServer := http.FileServer(http.Dir("./static"))
